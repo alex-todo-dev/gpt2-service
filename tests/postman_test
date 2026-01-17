@@ -1,0 +1,38 @@
+
+
+1.  POST: 127.0.0.1:8000/encode
+    JSON BODY: { "text": "That is my text" }
+
+    RESULT: 
+    {
+        "tokens": [
+            2504,
+            318,
+            616,
+            2420
+        ],
+        "count": 4
+    }
+
+2.  POST: 127.0.0.1:8000/decode
+    JSON BODY: { "tokens": [2504,318,616,2420] }
+
+    RESULT: 
+    {
+    "text": "That is my text"
+    }   
+
+3.  POST: 127.0.0.1:8000/generate
+    JSON BODY: { "prompt": "FAST API is PYTHON ","temp":0.2 ,"top_p": 0.95, "max_new_tokens": 50, "num_return_sequences": 2 }
+
+    RESULT:
+    {
+    "result": [
+        {
+            "generated_text": "FAST API is PYTHON !!\n\nThis is a very simple API that is very easy to use.\n\nIt is a simple API that is very easy to use. It is a simple API that is very easy to use. It is a simple API that is very"
+        },
+        {
+            "generated_text": "FAST API is PYTHON !!\n\nI have been using this for a while now and I have been using it for a while now and I have been using it for a while now and I have been using it for a while now and I have been using it for a"
+        }
+    ]
+}
