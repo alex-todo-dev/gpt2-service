@@ -87,7 +87,7 @@ API documentation is available at `http://localhost:8000/docs` when the service 
 curl -X POST http://localhost:8000/generate \
   -H "Content-Type: application/json" \
   -d '{
-    "prompt": "FAST API is PYTHON",
+    "prompt": "FAST API IS",
     "temp": 0.2,
     "top_p": 0.95,
     "max_new_tokens": 50,
