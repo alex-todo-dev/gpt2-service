@@ -1,4 +1,7 @@
-# ML Ops Exercise
+# GTP2 service docker 
+
+GITHUB: https://github.com/alex-todo-dev/gpt2-service 
+DOCKER HUB (cpu version): https://hub.docker.com/repository/docker/alextododev/gpt2-service/general
 
 A FastAPI service providing GPT-2 language model capabilities for text encoding, decoding, and generation.
 
@@ -8,30 +11,6 @@ A FastAPI service providing GPT-2 language model capabilities for text encoding,
 - **Decode**: Convert token embeddings back to text
 - **Generate**: Generate text from prompts with configurable parameters
 
-## Quick Start
-
-### Local Development
-
-1. Install dependencies:
-```bash
-poetry install
-```
-
-2. Run the service:
-```bash
-poetry run uvicorn src.ml_ops_exercise.main:app --reload
-```
-
-The API will be available at `http://localhost:8000`
-
-### Docker
-
-Build and run with Docker:
-```bash
-docker build -t gpt2-llm-service .
-docker run -p 8000:8000 gpt2-llm-service
-```
-
 ## API Endpoints
 
 - `GET /health` - Health check
@@ -39,7 +18,67 @@ docker run -p 8000:8000 gpt2-llm-service
 - `POST /decode` - Decode tokens to text
 - `POST /generate` - Generate text from a prompt
 
-API documentation available at `http://localhost:8000/docs`
+## Installation and Setup
+
+### Local Development
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/alex-todo-dev/gpt2-service.git
+   cd gpt2-service
+   ```
+
+2. **Install dependencies with Poetry:**
+   ```bash
+   poetry install
+   ```
+
+3. **Start the service:**
+   ```bash
+   poetry run uvicorn src.ml_ops_exercise.main:app --reload
+   ```
+
+### Docker Build and Run
+
+The project provides two Dockerfiles:
+
+- **`Dockerfile`** - CPU-only version (optimized, smaller size ~3-5GB)
+- **`Dockerfile.gpu`** - GPU version with CUDA 12.1 support (requires NVIDIA Docker runtime)
+
+#### CPU Version (Recommended for most use cases)
+
+```bash
+# Build the image
+docker build -t gpt2-llm-service-cpu .
+
+# Run the container
+docker run -it --rm -p 8000:8000 gpt2-llm-service-cpu
+
+```
+
+#### GPU Version (Requires NVIDIA GPU and nvidia-docker)
+
+```bash
+# Build the GPU image
+docker build -f Dockerfile.gpu -t gpt2-llm-service:gpu .
+
+# Run with GPU support
+docker run --gpus all -it --rm -p 8000:8000 gpt2-llm-service:gpu
+```
+
+**Note:** Both Docker images:
+- Pre-download the model during build time
+- Run in offline mode (`TRANSFORMERS_OFFLINE=1`) after build
+- Cache models in `/app/model_cache` (set via `HF_HOME`)
+
+**Custom Model:** You can specify a different model during build:
+```bash
+docker build --build-arg MODEL_NAME=your-model-name -t gpt2-llm-service-cpu .
+```
+
+## API Documentation
+
+API documentation is available at `http://localhost:8000/docs` when the service is running.
 
 ## Example Usage
 
@@ -47,7 +86,13 @@ API documentation available at `http://localhost:8000/docs`
 ```bash
 curl -X POST http://localhost:8000/generate \
   -H "Content-Type: application/json" \
-  -d '{"prompt": "The future of AI", "max_new_tokens": 50}'
+  -d '{
+    "prompt": "FAST API is PYTHON",
+    "temp": 0.2,
+    "top_p": 0.95,
+    "max_new_tokens": 50,
+    "num_return_sequences": 2
+  }'
 ```
 
 **Encode text:**
@@ -57,8 +102,9 @@ curl -X POST http://localhost:8000/encode \
   -d '{"text": "Hello, world!"}'
 ```
 
-## Requirements
-
-- Python 3.10-3.14
-- Poetry for dependency management
-
+**Decode tokens:**
+```bash
+curl -X POST http://localhost:8000/decode \
+  -H "Content-Type: application/json" \
+  -d '{"tokens": [2504, 318, 616, 2420]}'
+```
