@@ -21,7 +21,7 @@ async def encode(data: EncoderModel):
 
 @app.post("/decode")
 async def decode(data: DecoderModel):
-    """Decode token embeddings back to text."""
+    """Decode token embeddings to text."""
     text = llm_service.decode(data.tokens)
     return {"text": text}
 
