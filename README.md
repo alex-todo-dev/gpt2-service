@@ -1,7 +1,7 @@
 # GTP2 service docker 
 
 GITHUB: https://github.com/alex-todo-dev/gpt2-service 
-DOCKER HUB (cpu version): https://hub.docker.com/repository/docker/alextododev/gpt2-service/general
+DOCKER HUB (cpu version): https://hub.docker.com/r/alextododev/gpt2-service
 
 A FastAPI service providing GPT-2 language model capabilities for text encoding, decoding, and generation.
 
